@@ -1,8 +1,7 @@
+from gerenciadores.GerenciadorMemoria import GerenciadorMemoria
 from include.Process import Process
 
 def main(arquivos):
-    print("qualquer coisa")
-
     try:
         processos = arquivos[0]
         arquivoProcessos = open(processos, "r")
@@ -14,17 +13,14 @@ def main(arquivos):
         for line in arquivoProcessos:
             listaProcessos.append(Process(line))
 
-        Operacoes = File(arquivoOperacoes)
+        gerenciadorMemoria = GerenciadorMemoria(arquivoOperacoes);
 
 
         print(listaProcessos)
 
-
-
-
-
     except:
         print("Não foi possivel pegar o nome dos arquivo")
+#         remover essa exception geral e criar uma especifica para cada parte
 
 
 

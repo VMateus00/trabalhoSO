@@ -1,4 +1,6 @@
+from gerenciadores.GerenciadorDisco import GerenciadorDisco
 from gerenciadores.GerenciadorMemoria import GerenciadorMemoria
+from gerenciadores.GerenciadorProcesso import GerenciadorProcesso
 from include.Process import Process
 
 def main(arquivos):
@@ -13,7 +15,9 @@ def main(arquivos):
         for line in arquivoProcessos:
             listaProcessos.append(Process(line))
 
-        gerenciadorMemoria = GerenciadorMemoria(arquivoOperacoes);
+        gerenciadorProcessos = GerenciadorProcesso(listaProcessos)
+        gerenciadorDisco = GerenciadorDisco(arquivoOperacoes)
+        gerenciadorMemoria = GerenciadorMemoria
 
 
         print(listaProcessos)

@@ -1,21 +1,19 @@
-from include.DiskOperation import DiskOperation
-from include.MemBlock import MemBlock
-
-
 class GerenciadorMemoria:
-    def __init__(self, arquivo):
-        self.tamanhoMemoria = arquivo.readline()
-        self.segmentosOcupados = int(arquivo.readline())
+    def __init__(self):
 
-        self.listaBlocos = []
-        for i in range(self.segmentosOcupados):
-            self.listaBlocos.append(self.readBloco(arquivo.readline()))
+        self.qtdMaximaBlocos = 1024
+        self.qtdMaxBlocosProcessosTempoReal = 64
+        self.qtdMaxBlocosProcessosUsuario = 960
 
-        self.listaOperacoes = []
-        for line in arquivo:
-            self.listaOperacoes.append(DiskOperation(line))
-        # TODO criar lista com os blocos vazios a partir da lista de blocos utilizados
+        self.blocosUsadosProcTempoReal = 0
+        self.blocosUsadosProcUsuario = 0
 
-    def readBloco(self, line):
-        line = line.split(',')
-        return MemBlock(line)
+    def aumentaBlocosUtilizadosProcTempoReal(self, qtdBlocosAumentar):
+        if((self.blocosUsadosProcTempoReal + qtdBlocosAumentar) > self.qtdMaxBlocosProcessosTempoReal):
+            print("Error: o bloco não pode ser adicionado")
+            # verificar o que fazer nesse caso
+
+    def aumentaBlocosUtilizadosProcUsuario(self, qtdBlocosAumentar):
+        if((self.blocosUsadosProcUsuario + qtdBlocosAumentar) > self.qtdMaxBlocosProcessosUsuario):
+            print("Error: o bloco não pode ser adicionado")
+            # verificar o que fazer nesse caso

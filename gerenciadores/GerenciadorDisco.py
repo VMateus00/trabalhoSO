@@ -4,7 +4,7 @@ from include.MemBlock import MemBlock
 
 class GerenciadorDisco:
     def __init__(self, arquivo):
-        self.tamanhoMemoria = arquivo.readline()
+        self.tamanhoMemoria = int(arquivo.readline())
         self.segmentosOcupados = int(arquivo.readline())
 
         self.listaBlocos = []
@@ -19,10 +19,19 @@ class GerenciadorDisco:
 
     def readBloco(self, line):
         line = line.split(',')
-        return MemBlock(line)
+        return MemBlock(line[0], line[1], line[2])
 
     def carregaListaEspacosVazios(self):
-        # TODO criar lista com os blocos vazios a partir da lista de blocos utilizados
         blocoAtual = 0
 
+        self.blocosLivres = []
         self.blocosOrdenadosPorPosicao = sorted(self.listaBlocos, key=lambda block: block.posicaoInicial)
+
+        for bloco in self.blocosOrdenadosPorPosicao:
+            if blocoAtual < bloco.posicaoInicial:
+                self.blocosLivres.append(MemBlock("livre", blocoAtual, bloco.posicaoInicial-blocoAtual))
+                blocoAtual += bloco.posicaoInicial-blocoAtual
+            blocoAtual += bloco.qtdBlocosOcupados
+
+        if blocoAtual < self.tamanhoMemoria:
+            self.blocosLivres.append(MemBlock("livre", blocoAtual, self.tamanhoMemoria-blocoAtual))

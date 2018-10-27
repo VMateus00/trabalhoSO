@@ -21,7 +21,7 @@ def main(arquivos):
         gerenciadorMemoria = GerenciadorMemoria()
         gerenciadorEntradaSaida = GerenciadorEntradaSaida()
 
-        print(listaProcessos)
+        print(gerenciadorDisco.printMapaOcupacaoDoDisco())
 
     except:
         print("Não foi possivel pegar o nome dos arquivo")

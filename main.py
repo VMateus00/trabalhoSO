@@ -2,6 +2,7 @@ from gerenciadores.GerenciadorDisco import GerenciadorDisco
 from gerenciadores.GerenciadorEntradaSaida import GerenciadorEntradaSaida
 from gerenciadores.GerenciadorMemoria import GerenciadorMemoria
 from gerenciadores.GerenciadorProcesso import GerenciadorProcesso
+from gerenciadores.GerenciadorFila import GerenciadorFila
 from include.Process import Process
 
 def main(arquivos):
@@ -15,11 +16,13 @@ def main(arquivos):
         listaProcessos = []
         for line in arquivoProcessos:
             listaProcessos.append(Process(line))
-
+    
         gerenciadorProcessos = GerenciadorProcesso(listaProcessos)
         gerenciadorDisco = GerenciadorDisco(arquivoOperacoes)
         gerenciadorMemoria = GerenciadorMemoria()
         gerenciadorEntradaSaida = GerenciadorEntradaSaida()
+
+        gerenciadorFila = GerenciadorFila(listaProcessos)
 
         print(gerenciadorDisco.printMapaOcupacaoDoDisco())
 

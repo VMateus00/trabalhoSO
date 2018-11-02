@@ -4,7 +4,7 @@ import threading
 class GerenciadorEntradaSaida:
 
     def __init__(self):
-
+<<<<<<< HEAD
     	self.scanner = threading.Semaphore(1)
     	self.impressora1 = threading.Semaphore(1)
     	self.impressora2 = threading.Semaphore(1)
@@ -47,4 +47,5 @@ class GerenciadorEntradaSaida:
 
 	def driverRelease(self, indice):
 
-		self.dicioES["dispositivosSATA" + str(indice)].release()
+=======
+>>>>>>> ef48405f2bafe8fa548fdf923d51c5e6775fd12d

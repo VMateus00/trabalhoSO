@@ -36,8 +36,50 @@ class SistemaOperacional:
         else:
             return True
 
-    def obtemRecursosDisco(self, frame):
-        return True
+    def obtemRecursosES(self, frame):
+        # Se o valor não quiser alguma impressora
+        if frame.process.codigoImpressora == 0:
+            impressoraBool = True
+
+        # Caso queira alguma impressora
+        else:
+            impressoraBool = self.gerenciadorEntradaSaida.impressoraStatus(frame.process.codigoImpressora)
+
+        # Se o processo não quiser o Scanner
+        if frame.process.requisicaoScanner == 0:
+            scannerBool = True
+
+        # Caso queira o Scanner
+        else:
+            scannerBool = self.gerenciadorEntradaSaida.scannerStatus()
+
+        # Caso o processo não quiser algum Dispositivo Sata
+        if frame.process.codigoDisco == 0:
+            driverBool = True
+
+        # Caso o processor queira algum Dispositivo Sata
+        else:
+            driverBool = self.gerenciadorEntradaSaida.driverStatus(frame.process.codigoDisco)
+
+        # Caso o processo consiga todos os seus dispositivos
+        if impressoraBool == True and scannerBool == True and driverBool == True:
+            return True
+
+        # Caso o processo não consigo algum dos dispostivos
+        else:
+            # Devolve a permissão para a impressoraX caso a tenha pegado
+            if impressoraBool == True and frame.process.codigoImpressora != 0:
+                self.gerenciadorEntradaSaida.impressoraRelease(frame.process.codigoImpressora)
+
+            # Devolve a permissão para o scanner caso o tenha pegado
+            if scannerBool == True and frame.process.requisicaoScanner != 0:
+                self.gerenciadorEntradaSaida.scannerRelease()
+
+            # Devolve a permissão para o driverX caso o tenha pegado
+            if driverBool == True and frame.process.codigoDisco != 0:
+                self.gerenciadorEntradaSaida.driverRelease(frame.process.codigoDisco)
+
+            return False
 
     def dispatcherPrint(self, frame):
         print("PID :", frame.pyd)

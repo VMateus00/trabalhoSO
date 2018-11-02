@@ -20,3 +20,31 @@ class GerenciadorEntradaSaida:
 	        "dispositivosSATA1" : self.dispositivosSATA1,
 	        "dispositivosSATA2" : self.dispositivosSATA2
 		}
+
+	# MÉTODOS DE PEGAR PERMISSÃO DOS DISPOSITIVOS
+
+	def  impressoraStatus(self, indice):
+		
+		return self.dicioES["impressora" + str(indice)].acquire(blocking=False)
+
+	def  scannerStatus(self):
+		
+		return self.dicioES["scanner"].acquire(blocking=False)
+
+	def  driverStatus(self, indice):
+		
+		return self.dicioES["dispositivosSATA" + str(indice)].acquire(blocking=False)
+
+	# MÉTODOS DE DAR PERMISSÃO PRO DISPOSITIVO
+
+	def impressoraRelease(self, indice):
+
+		self.dicioES["impressora" + str(indice)].release()
+
+	def scannerRelease(self):
+
+		self.dicioES["scanner"].release()
+
+	def driverRelease(self, indice):
+
+		self.dicioES["dispositivosSATA" + str(indice)].release()

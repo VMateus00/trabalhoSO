@@ -65,7 +65,7 @@ class GerenciadorDisco:
             else:
                 i = 0
                 while i < blocoLivreAtual.qtdBlocosOcupados:
-                    print(" |", end="")
+                    print("0|", end="")
                     i += 1
                 posicaoArrayLivre += 1
 

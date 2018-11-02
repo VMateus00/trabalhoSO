@@ -2,7 +2,7 @@ Tasks:
 
 * Criar classe SO que conterá todos os gerenciadores e comecará a executar os processos.
 
-* Crias filas de prioridade (colocar a fila do gerenciador de processos - criar gerenciadorFila)
+* Crias filas de prioridade (colocar a fila do gerenciador de processos - criar gerenciadorFila) DONE 
 
 * definir e implementar como será o aging (envelhecimento dos processos) -> fica no msm lugar que a fila
     -> filas podem suportar no maximo 1000 processos
@@ -12,7 +12,7 @@ Tasks:
 
 * Ao encerrar o programa, mostrar o estado do disco (já está 99% implementado - só refinar a exibição)
 
-* Separar semaforo de recursos que possuem mais de uma permissão, colocar "nomeDoRecurso"+ (1 | 2), e o respectivo semaforo
+* Separar semaforo de recursos que possuem mais de uma permissão, colocar "nomeDoRecurso"+ (1 | 2), e o respectivo semaforo DONE
 
 * criar funcoes de arquivos ao disco (add, remove), testar o estado das listas de execução ao utilizar (se permanecesse consistente)
 

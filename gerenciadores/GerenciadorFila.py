@@ -1,10 +1,11 @@
 class GerenciadorFila:
 
 	def __init__(self, listaProcessos):
-		self.filaProcessosProntos = []
 
 		self.filaTempoReal = []
 		self.filaProcessosUsuario = [[], [], []]
+
+		self.filaProcessosProntos = [self.filaTempoReal, self.filaProcessosUsuario]
 
 		for indice in range(len(listaProcessos)):
 

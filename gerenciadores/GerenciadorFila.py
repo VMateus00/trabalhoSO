@@ -50,3 +50,7 @@ class GerenciadorFila:
             return True
         else:
             return False
+
+    def adicionaProcessoDevoltaALista(self, frame):
+        # TODO
+        pass

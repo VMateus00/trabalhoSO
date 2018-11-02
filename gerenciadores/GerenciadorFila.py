@@ -12,19 +12,15 @@ class GerenciadorFila:
 				self.filaTempoReal.append(listaProcessos[indice])
 
 			elif (listaProcessos[indice].prioridadeProcesso == 1):
-				self.filaProcessosUsuario[1].append(listaProcessos[indice])
+				self.filaProcessosUsuario[0].append(listaProcessos[indice])
 
 			elif (listaProcessos[indice].prioridadeProcesso == 2):
-				self.filaProcessosUsuario[2].append(listaProcessos[indice])
+				self.filaProcessosUsuario[1].append(listaProcessos[indice])
 
 			elif (listaProcessos[indice].prioridadeProcesso == 3):
-				self.filaProcessosUsuario[3].append(listaProcessos[indice])
+				self.filaProcessosUsuario[2].append(listaProcessos[indice])
 
 			else:
 				print("Prioridade inconsistente")
-
-	# def aging(self):
-
-		
 
 

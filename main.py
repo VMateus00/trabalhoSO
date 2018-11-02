@@ -4,6 +4,8 @@ from gerenciadores.GerenciadorMemoria import GerenciadorMemoria
 from gerenciadores.GerenciadorProcesso import GerenciadorProcesso
 from gerenciadores.GerenciadorFila import GerenciadorFila
 from include.Process import Process
+from include.SistemaOperacional import SistemaOperacional
+
 
 def main(arquivos):
     try:
@@ -29,7 +31,8 @@ def main(arquivos):
 
     gerenciadorFila = GerenciadorFila(listaProcessos)
 
-    print(gerenciadorDisco.printMapaOcupacaoDoDisco())
+    SistemaOperacional(gerenciadorProcessos, gerenciadorDisco, gerenciadorMemoria, gerenciadorEntradaSaida, gerenciadorFila)
+
 
 
 if __name__=="__main__":

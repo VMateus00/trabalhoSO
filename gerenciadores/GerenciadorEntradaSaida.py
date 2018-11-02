@@ -11,14 +11,6 @@ class GerenciadorEntradaSaida:
         self.dispositivosSATA1 = threading.Semaphore(1)
         self.dispositivosSATA2 = threading.Semaphore(1)
 
-<<<<<<< HEAD
-    	self.scanner = threading.Semaphore(1)
-    	self.impressora1 = threading.Semaphore(1)
-    	self.impressora2 = threading.Semaphore(1)
-    	self.modem = threading.Semaphore(1)
-    	self.dispositivosSATA1 = threading.Semaphore(1)
-    	self.dispositivosSATA2 = threading.Semaphore(1)
-
     	self.dicioES = {
 	        "scanner" : self.scanner,
 	        "impressora1" : self.impressora1,
@@ -55,13 +47,3 @@ class GerenciadorEntradaSaida:
 	def driverRelease(self, indice):
 
 		self.dicioES["dispositivosSATA" + str(indice)].release()
-=======
-        self.dicioES = {
-            "scanner": self.scanner,
-            "impressora1": self.impressora1,
-            "impressora2": self.impressora2,
-            "modem": self.modem,
-            "dispositivosSATA1": self.dispositivosSATA1,
-            "dispositivosSATA2": self.dispositivosSATA2
-        }
->>>>>>> ef48405f2bafe8fa548fdf923d51c5e6775fd12d

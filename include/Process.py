@@ -9,7 +9,7 @@ class Process:
         self.codigoImpressora = int(listaParametros[4])
         self.requisicaoScanner = int(listaParametros[5])
         self.requisicaoModem = int(listaParametros[6])
-        self.numeroCodigoDisco = int(listaParametros[7])
+        self.codigoDisco = int(listaParametros[7])
 
 
 

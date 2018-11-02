@@ -5,7 +5,8 @@ class GerenciadorEntradaSaida:
 
     def __init__(self):
         self.scanner = threading.Semaphore(1)
-        self.impressoras = threading.Semaphore(2)
+        self.impressora2 = threading.Semaphore(1)
+        self.impressora1 = threading.Semaphore(1)
         self.modem = threading.Semaphore(1)
-        self.dispositivosSATA = threading.Semaphore(2)
-
+        self.dispositivosSATA1 = threading.Semaphore(1)
+        self.dispositivosSATA2 = threading.Semaphore(1)

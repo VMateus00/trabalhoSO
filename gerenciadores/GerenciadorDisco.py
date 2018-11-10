@@ -12,8 +12,10 @@ class GerenciadorDisco:
             self.blocosOcupados.append(self.readBloco(arquivo.readline()))
 
         self.listaOperacoes = []
+        identificadorOperacao = 0
         for line in arquivo:
-            self.listaOperacoes.append(DiskOperation(line))
+            self.listaOperacoes.append(DiskOperation(line, identificadorOperacao))
+            identificadorOperacao += 1
 
         self.blocosLivres = []
         self.carregaListaEspacosVazios()
@@ -70,3 +72,17 @@ class GerenciadorDisco:
                 posicaoArrayLivre += 1
 
         print("\n---------------------")
+
+    def executaFuncaoDiscoSeExistir(self, pidProcess):
+        # TODO
+        pass
+
+    def getOperationFromProcess(self, pidProcess):
+        # TODO
+        pass
+
+    # Metodo para mostrar as operacoes de disco que nao foram executadas pois os
+    # processos já terminaram seu tempo de processamento
+    def showOperationsNotExecuted(self):
+        # TODO
+        pass

@@ -11,39 +11,33 @@ class GerenciadorEntradaSaida:
         self.dispositivosSATA1 = threading.Semaphore(1)
         self.dispositivosSATA2 = threading.Semaphore(1)
 
-    	self.dicioES = {
-	        "scanner" : self.scanner,
-	        "impressora1" : self.impressora1,
-	        "impressora2" : self.impressora2,
-	        "modem" : self.modem,
-	        "dispositivosSATA1" : self.dispositivosSATA1,
-	        "dispositivosSATA2" : self.dispositivosSATA2
-		}
+        self.dicioES = {
+            "scanner": self.scanner,
+            "impressora1": self.impressora1,
+            "impressora2": self.impressora2,
+            "modem": self.modem,
+            "dispositivosSATA1": self.dispositivosSATA1,
+            "dispositivosSATA2": self.dispositivosSATA2
+        }
 
-	# MÉTODOS DE PEGAR PERMISSÃO DOS DISPOSITIVOS
+    # MÉTODOS DE PEGAR PERMISSÃO DOS DISPOSITIVOS
 
-	def  impressoraStatus(self, indice):
-		
-		return self.dicioES["impressora" + str(indice)].acquire(blocking=False)
+    def impressoraStatus(self, indice):
+        return self.dicioES["impressora" + str(indice)].acquire(blocking=False)
 
-	def  scannerStatus(self):
-		
-		return self.dicioES["scanner"].acquire(blocking=False)
+    def scannerStatus(self):
+        return self.dicioES["scanner"].acquire(blocking=False)
 
-	def  driverStatus(self, indice):
-		
-		return self.dicioES["dispositivosSATA" + str(indice)].acquire(blocking=False)
+    def driverStatus(self, indice):
+        return self.dicioES["dispositivosSATA" + str(indice)].acquire(blocking=False)
 
-	# MÉTODOS DE DAR PERMISSÃO PRO DISPOSITIVO
+        # MÉTODOS DE DAR PERMISSÃO PRO DISPOSITIVO
 
-	def impressoraRelease(self, indice):
+    def impressoraRelease(self, indice):
+        self.dicioES["impressora" + str(indice)].release()
 
-		self.dicioES["impressora" + str(indice)].release()
+    def scannerRelease(self):
+        self.dicioES["scanner"].release()
 
-	def scannerRelease(self):
-
-		self.dicioES["scanner"].release()
-
-	def driverRelease(self, indice):
-
-		self.dicioES["dispositivosSATA" + str(indice)].release()
+    def driverRelease(self, indice):
+        self.dicioES["dispositivosSATA" + str(indice)].release()

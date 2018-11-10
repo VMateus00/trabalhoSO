@@ -1,5 +1,3 @@
-import time
-
 class SistemaOperacional:
 
     QUANTUM = 1
@@ -22,6 +20,7 @@ class SistemaOperacional:
                     self.dispatcherPrint(frame)
                 instanteAtual = self.executaProcesso(frame, instanteAtual)
 
+        self.gerenciadorDisco.showOperationsNotExecuted()
         print(self.gerenciadorDisco.printMapaOcupacaoDoDisco())
 
     def executaProcesso(self, frame, instanteAtual):
@@ -40,13 +39,13 @@ class SistemaOperacional:
             return instanteAtual+1
 
     def executaInstrucaoPorTempo(self, tempoExecucao, instrucaoAtual, pidProcess):
-        tempoAtual = time.time()
-        tempoExecutado = time.time()
-
-        while(tempoExecutado - tempoAtual) <= tempoExecucao:
+        contadorTempo = 0
+        while contadorTempo < tempoExecucao:
             print("P" + str(pidProcess) + " instruction " + str(instrucaoAtual))
-            instrucaoAtual +=1
-            tempoExecutado = time.time()
+            self.executaFuncaoDiscoSeExistir(pidProcess)
+            contadorTempo += 1
+            instrucaoAtual += 1
+
         return instrucaoAtual
 
     def inicializaProcesso(self, frame):
@@ -60,7 +59,7 @@ class SistemaOperacional:
                 return False
             else:
                 frame.offsetMemoria = offsetMemoria
-                return self.obtemRecursosDisco(frame)
+                return self.obtemRecursosES(frame)
         else:
             return True
 
@@ -90,26 +89,27 @@ class SistemaOperacional:
             driverBool = self.gerenciadorEntradaSaida.driverStatus(frame.process.codigoDisco)
 
         # Caso o processo consiga todos os seus dispositivos
-        if impressoraBool == True and scannerBool == True and driverBool == True:
+        if impressoraBool is True and scannerBool is True and driverBool is True:
             return True
 
         # Caso o processo não consigo algum dos dispostivos
         else:
             # Devolve a permissão para a impressoraX caso a tenha pegado
-            if impressoraBool == True and frame.process.codigoImpressora != 0:
+            if impressoraBool is True and frame.process.codigoImpressora != 0:
                 self.gerenciadorEntradaSaida.impressoraRelease(frame.process.codigoImpressora)
 
             # Devolve a permissão para o scanner caso o tenha pegado
-            if scannerBool == True and frame.process.requisicaoScanner != 0:
+            if scannerBool is True and frame.process.requisicaoScanner != 0:
                 self.gerenciadorEntradaSaida.scannerRelease()
 
             # Devolve a permissão para o driverX caso o tenha pegado
-            if driverBool == True and frame.process.codigoDisco != 0:
+            if driverBool is True and frame.process.codigoDisco != 0:
                 self.gerenciadorEntradaSaida.driverRelease(frame.process.codigoDisco)
 
             return False
 
     def dispatcherPrint(self, frame):
+        print()
         print("PID :", frame.pid)
         print("Offset: ", frame.offsetMemoria)
         print("Prioridade do processo: ", frame.process.prioridadeProcesso)
@@ -122,3 +122,6 @@ class SistemaOperacional:
     def liberaEspacoOcupadoProcesso(self, frame):
         # TODO
         pass
+
+    def executaFuncaoDiscoSeExistir(self, pidProcess):
+        self.gerenciadorDisco.executaFuncaoDiscoSeExistir(pidProcess)

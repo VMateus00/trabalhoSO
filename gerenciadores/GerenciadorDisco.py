@@ -120,8 +120,15 @@ class GerenciadorDisco:
                 return bloco
         return None
 
-    # Metodo para mostrar as operacoes de disco elas só aparecem ao terminar todo o processamento,
+    # Metodo para mostrar as operacoes de disco elas só aparecem ao terminar os processos,
     # apesar de serem feitas enquanto executa
     def showDiskOperations(self):
-        # TODO
-        pass
+        print("Sistema de arquivos => ")
+        for diskOperation in self.listaOperacoes:
+            print("Operação " + diskOperation.operationCod + " => ", end="")
+            if diskOperation.resultadoOperacao:
+                print("Sucesso")
+            else:
+                print("Falha")
+
+            print(diskOperation.msgSaida)

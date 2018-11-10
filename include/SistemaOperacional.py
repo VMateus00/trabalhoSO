@@ -115,14 +115,14 @@ class SistemaOperacional:
             return False
 
     def dispatcherPrint(self, frame):
-        print()
-        print("PID :", frame.pid)
-        print("Offset: ", frame.offsetMemoria)
-        print("Prioridade do processo: ", frame.process.prioridadeProcesso)
-        print("Time: ", frame.process.tempoProcessador)
-        print("Utilização de impressora: ", frame.process.codigoImpressora)
-        print("Utilização de scanner", frame.process.requisicaoScanner)
-        print("Utilização de drivers: ", frame.process.codigoDisco)
+        print("Dispatcher => ")
+        print("   PID :", frame.pid)
+        print("   Offset: ", frame.offsetMemoria)
+        print("   Prioridade do processo: ", frame.process.prioridadeProcesso)
+        print("   Time: ", frame.process.tempoProcessador)
+        print("   Utilização de impressora: ", frame.process.codigoImpressora)
+        print("   Utilização de scanner", frame.process.requisicaoScanner)
+        print("   Utilização de drivers: ", frame.process.codigoDisco)
         print()
 
     def liberaEspacoOcupadoProcesso(self, frame):

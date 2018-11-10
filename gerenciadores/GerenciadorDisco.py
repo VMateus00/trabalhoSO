@@ -81,20 +81,47 @@ class GerenciadorDisco:
                 self.executaOperacao(diskOperation, pidProcess, isProcessTempoReal)
                 break
 
+    # TODO ainda incompleto
     def executaOperacao(self, diskOperation, pidProcess, isProcessTempoReal):
-        if diskOperation.typeOfOperation == 0:
+        if diskOperation.typeOfOperation == 0:  # O => cria arquivos em disco
+            bloco = self.getBlocoMemoriaLivreSeExistir(diskOperation.createOperation)
+            if bloco is None:
+                diskOperation.msgSaida = "O processo " + str(pidProcess) + " não pode criar o arquivo " + diskOperation.fileName + " (Falta de espaço)."
+            else:
+                bloco.processoCriouCod = pidProcess
             print()
-        elif diskOperation.typeOfOperation == 1:
+        elif diskOperation.typeOfOperation == 1:  # 1 => remove arquivos em disco
             print()
         else:
             diskOperation.msgSaida = "Operação inválida"
 
-    def getOperationFromProcess(self, pidProcess):
-        # TODO
-        pass
+    def getBlocoMemoriaLivreSeExistir(self, qtdBlocosNecessarios):
 
-    # Metodo para mostrar as operacoes de disco que nao foram executadas pois os
-    # processos já terminaram seu tempo de processamento
-    def showOperationsNotExecuted(self):
+        bloco = self.getFirstBlocoLivre(qtdBlocosNecessarios)
+        if bloco is None:
+            return None
+        else:
+            # criar um bloco do tamanho exato se for maior, liberando o espaco que nao foi usado
+            if bloco.qtdBlocosOcupados > qtdBlocosNecessarios:
+                posicaoInicialNovoBlocoVazio = bloco.posicaoInicial + (bloco.qtdBlocosOcupados - qtdBlocosNecessarios)
+                qtdBlocosOcupados = bloco.qtdBlocosOcupados - qtdBlocosNecessarios
+                self.blocosLivres.append(MemBlock("livre", posicaoInicialNovoBlocoVazio, qtdBlocosOcupados))
+                self.blocosLivres.sort(key=lambda bloco : bloco.posicaoInicial)
+        self.blocosOcupados.append(bloco)
+        self.blocosOcupados.sort(key=lambda bloco : bloco.posicaoInicial)
+
+        return bloco
+
+    def getFirstBlocoLivre(self, qtdBlocos):
+        # TODO remover esse for e colocar um utilitario padrao da linguagem
+        for bloco in self.blocosLivres:
+            if bloco.qtdBlocosOcupados >= qtdBlocos:
+                # TODO fazer com que ele remova esse bloco da lista de blocos livres
+                return bloco
+        return None
+
+    # Metodo para mostrar as operacoes de disco elas só aparecem ao terminar todo o processamento,
+    # apesar de serem feitas enquanto executa
+    def showDiskOperations(self):
         # TODO
         pass

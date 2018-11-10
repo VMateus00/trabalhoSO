@@ -20,7 +20,7 @@ class SistemaOperacional:
                     self.dispatcherPrint(frame)
                 instanteAtual = self.executaProcesso(frame, instanteAtual)
 
-        self.gerenciadorDisco.showOperationsNotExecuted()
+        self.gerenciadorDisco.showDiskOperations()
         print(self.gerenciadorDisco.printMapaOcupacaoDoDisco())
 
     def executaProcesso(self, frame, instanteAtual):
@@ -35,7 +35,7 @@ class SistemaOperacional:
                 print("P" + str(frame.pid) + " return SIGINT")
                 self.liberaEspacoOcupadoProcesso(frame)
             else:
-                self.gerenciadorFila.adicionaProcessoDevoltaALista(frame)
+                self.gerenciadorFila.adicionaProcessoDeVoltaAListaDeProntos(frame)
             return instanteAtual+1
 
     def executaInstrucaoPorTempo(self, tempoExecucao, instrucaoAtual, pidProcess, isProcessTempoReal):

@@ -25,11 +25,11 @@ class SistemaOperacional:
 
     def executaProcesso(self, frame, instanteAtual):
         if frame.process.prioridadeProcesso == 0:
-            self.executaInstrucaoPorTempo(frame.process.tempoProcessador, frame.instrucaoAtual, frame.pid)
+            self.executaInstrucaoPorTempo(frame.process.tempoProcessador, frame.instrucaoAtual, frame.pid, True)
             print("P" + str(frame.pid) + " return SIGINT")
             return instanteAtual + frame.process.tempoProcessador
         else:
-            frame.instrucaoAtual = self.executaInstrucaoPorTempo(SistemaOperacional.QUANTUM, frame.instrucaoAtual, frame.pid)
+            frame.instrucaoAtual = self.executaInstrucaoPorTempo(SistemaOperacional.QUANTUM, frame.instrucaoAtual, frame.pid, False)
             frame.tempoExecutado += SistemaOperacional.QUANTUM
             if frame.tempoExecutado == frame.process.tempoProcessador:
                 print("P" + str(frame.pid) + " return SIGINT")
@@ -38,11 +38,11 @@ class SistemaOperacional:
                 self.gerenciadorFila.adicionaProcessoDevoltaALista(frame)
             return instanteAtual+1
 
-    def executaInstrucaoPorTempo(self, tempoExecucao, instrucaoAtual, pidProcess):
+    def executaInstrucaoPorTempo(self, tempoExecucao, instrucaoAtual, pidProcess, isProcessTempoReal):
         contadorTempo = 0
         while contadorTempo < tempoExecucao:
             print("P" + str(pidProcess) + " instruction " + str(instrucaoAtual))
-            self.executaFuncaoDiscoSeExistir(pidProcess)
+            self.executaFuncaoDiscoSeExistir(pidProcess, isProcessTempoReal)
             contadorTempo += 1
             instrucaoAtual += 1
 
@@ -123,5 +123,5 @@ class SistemaOperacional:
         # TODO
         pass
 
-    def executaFuncaoDiscoSeExistir(self, pidProcess):
-        self.gerenciadorDisco.executaFuncaoDiscoSeExistir(pidProcess)
+    def executaFuncaoDiscoSeExistir(self, pidProcess, isProcessTempoReal):
+        self.gerenciadorDisco.executaFuncaoDiscoSeExistir(pidProcess, isProcessTempoReal)

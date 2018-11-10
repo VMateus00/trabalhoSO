@@ -73,9 +73,21 @@ class GerenciadorDisco:
 
         print("\n---------------------")
 
-    def executaFuncaoDiscoSeExistir(self, pidProcess):
-        # TODO
-        pass
+    def executaFuncaoDiscoSeExistir(self, pidProcess, isProcessTempoReal):
+        self.listaOperacoes.sort(key=lambda diskOperation : diskOperation.operationCod)
+        for diskOperation in filter(lambda diskOperation: diskOperation.processCod == pidProcess, self.listaOperacoes):
+            if not diskOperation.isExecuted:
+                diskOperation.isExecuted = True
+                self.executaOperacao(diskOperation, pidProcess, isProcessTempoReal)
+                break
+
+    def executaOperacao(self, diskOperation, pidProcess, isProcessTempoReal):
+        if diskOperation.typeOfOperation == 0:
+            print()
+        elif diskOperation.typeOfOperation == 1:
+            print()
+        else:
+            diskOperation.msgSaida = "Operação inválida"
 
     def getOperationFromProcess(self, pidProcess):
         # TODO

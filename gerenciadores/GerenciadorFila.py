@@ -52,5 +52,6 @@ class GerenciadorFila:
             return False
 
     def adicionaProcessoDeVoltaAListaDeProntos(self, frame):
-        # TODO
-        pass
+        if frame.tempoExecutado < frame.process.tempoProcessador:
+            self.filaProcessosUsuario[frame.process.prioridadeProcesso-1].append(frame)
+

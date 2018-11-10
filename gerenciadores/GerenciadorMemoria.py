@@ -33,3 +33,10 @@ class GerenciadorMemoria:
                 retorno = self.blocosUsadosProcUsuario
                 self.blocosUsadosProcUsuario += qtdBlocosAdd
                 return retorno
+
+    def liberaProcessoDaMemoria(self, frame):
+        if frame.tempoExecutado == frame.process.tempoProcessador:
+            if frame.process.prioridadeProcesso == 0:
+                self.blocosUsadosProcTempoReal -= frame.process.blocoMemoria
+            else:
+                self.blocosUsadosProcUsuario -= frame.process.blocoMemoria

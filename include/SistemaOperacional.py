@@ -14,11 +14,15 @@ class SistemaOperacional:
         while not self.gerenciadorFila.isFilaProcessosVazia():
             frame = self.gerenciadorFila.getProcessoAtual(instanteAtual)
             if frame is None:
-                instanteAtual +=1
+                instanteAtual += 1
             else:
                 if self.inicializaProcesso(frame):
                     self.dispatcherPrint(frame)
-                instanteAtual = self.executaProcesso(frame, instanteAtual)
+
+                if frame.executed:
+                    instanteAtual = self.executaProcesso(frame, instanteAtual)
+                else:
+                    self.gerenciadorFila.adicionaProcessoDeVoltaAListaDeProntos(frame)
 
         self.gerenciadorDisco.showDiskOperations()
         print(self.gerenciadorDisco.printMapaOcupacaoDoDisco())
@@ -26,7 +30,9 @@ class SistemaOperacional:
     def executaProcesso(self, frame, instanteAtual):
         if frame.process.prioridadeProcesso == 0:
             self.executaInstrucaoPorTempo(frame.process.tempoProcessador, frame.instrucaoAtual, frame.pid, True)
+            frame.tempoExecutado = frame.process.tempoProcessador
             print("P" + str(frame.pid) + " return SIGINT")
+            self.liberaEspacoOcupadoProcesso(frame)
             return instanteAtual + frame.process.tempoProcessador
         else:
             frame.instrucaoAtual = self.executaInstrucaoPorTempo(SistemaOperacional.QUANTUM, frame.instrucaoAtual, frame.pid, False)
@@ -41,7 +47,7 @@ class SistemaOperacional:
     def executaInstrucaoPorTempo(self, tempoExecucao, instrucaoAtual, pidProcess, isProcessTempoReal):
         contadorTempo = 0
         while contadorTempo < tempoExecucao:
-            print("P" + str(pidProcess) + " instruction " + str(instrucaoAtual))
+            print("P" + str(pidProcess) + " instruction " + str(instrucaoAtual+1))
             self.executaFuncaoDiscoSeExistir(pidProcess, isProcessTempoReal)
             contadorTempo += 1
             instrucaoAtual += 1
@@ -50,18 +56,18 @@ class SistemaOperacional:
 
     def inicializaProcesso(self, frame):
         if frame.executed is False:
-            frame.executed = True
-
-            isBlocoTempoReal = frame.process.prioridadeProcesso == 0
-            offsetMemoria = self.gerenciadorMemoria.adicionaDadosEmMemoria(frame.process.blocoMemoria, isBlocoTempoReal)
-            if offsetMemoria == -1:
-                print("Não há espaço em memoria para alocar o processo")
-                return False
-            else:
-                frame.offsetMemoria = offsetMemoria
-                return self.obtemRecursosES(frame)
+            if self.obtemRecursosES(frame):
+                isBlocoTempoReal = frame.process.prioridadeProcesso == 0
+                offsetMemoria = self.gerenciadorMemoria.adicionaDadosEmMemoria(frame.process.blocoMemoria,
+                                                                               isBlocoTempoReal)
+                if offsetMemoria == -1:
+                    print("Não há espaço em memoria para alocar o processo")
+                    return False
+                else:
+                    frame.executed = True
+                    return True
         else:
-            return True
+            return False
 
     def obtemRecursosES(self, frame):
         # Se o valor não quiser alguma impressora
@@ -120,8 +126,7 @@ class SistemaOperacional:
         print()
 
     def liberaEspacoOcupadoProcesso(self, frame):
-        # TODO
-        pass
+        self.gerenciadorMemoria.liberaProcessoDaMemoria(frame)
 
     def executaFuncaoDiscoSeExistir(self, pidProcess, isProcessTempoReal):
         self.gerenciadorDisco.executaFuncaoDiscoSeExistir(pidProcess, isProcessTempoReal)

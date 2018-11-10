@@ -11,3 +11,4 @@ class DiskOperation:
             self.createOperation = int(linhaArgumentos[3].strip())
 
         self.msgSaida = ""
+        self.resultadoOperacao = False

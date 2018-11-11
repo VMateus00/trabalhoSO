@@ -29,13 +29,16 @@ class SistemaOperacional:
 
     def executaProcesso(self, frame, instanteAtual):
         if frame.process.prioridadeProcesso == 0:
-            self.executaInstrucaoPorTempo(frame.process.tempoProcessador, frame.instrucaoAtual, frame.pid, True)
-            frame.tempoExecutado = frame.process.tempoProcessador
+            tempoTotalExecutado = 0
+            while tempoTotalExecutado < frame.process.tempoProcessador:
+                self.executaInstrucaoPorTempo(SistemaOperacional.QUANTUM, frame.instrucaoAtual, frame.pid, True, instanteAtual)
+                tempoTotalExecutado += 1
             print("P" + str(frame.pid) + " return SIGINT")
+            frame.tempoExecutado = frame.process.tempoProcessador
             self.liberaEspacoOcupadoProcesso(frame)
             return instanteAtual + frame.process.tempoProcessador
         else:
-            frame.instrucaoAtual = self.executaInstrucaoPorTempo(SistemaOperacional.QUANTUM, frame.instrucaoAtual, frame.pid, False)
+            frame.instrucaoAtual = self.executaInstrucaoPorTempo(SistemaOperacional.QUANTUM, frame.instrucaoAtual, frame.pid, False, instanteAtual)
             frame.tempoExecutado += SistemaOperacional.QUANTUM
             if frame.tempoExecutado == frame.process.tempoProcessador:
                 print("P" + str(frame.pid) + " return SIGINT")
@@ -44,11 +47,12 @@ class SistemaOperacional:
                 self.gerenciadorFila.adicionaProcessoDeVoltaAListaDeProntos(frame)
             return instanteAtual+1
 
-    def executaInstrucaoPorTempo(self, tempoExecucao, instrucaoAtual, pidProcess, isProcessTempoReal):
+    def executaInstrucaoPorTempo(self, tempoExecucao, instrucaoAtual, pidProcess, isProcessTempoReal, instanteAtual):
         contadorTempo = 0
         while contadorTempo < tempoExecucao:
             print("P" + str(pidProcess) + " instruction " + str(instrucaoAtual+1))
             self.executaFuncaoDiscoSeExistir(pidProcess, isProcessTempoReal)
+            self.gerenciadorFila.atualizaPrioridadeProcessos(instanteAtual)
             contadorTempo += 1
             instrucaoAtual += 1
 

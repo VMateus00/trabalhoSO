@@ -54,4 +54,33 @@ class GerenciadorFila:
     def adicionaProcessoDeVoltaAListaDeProntos(self, frame):
         if frame.tempoExecutado < frame.process.tempoProcessador:
             self.filaProcessosUsuario[frame.process.prioridadeProcesso-1].append(frame)
+            frame.quantumEsperando = 0
 
+    def atualizaPrioridadeProcessos(self, instanteAtual):
+        # TODO filtrar os processos que tenham o tempo inicio menor que o instante atual
+        # Para cada processo, aumentar o contador de prioridade dele em 1 ponto
+        # quando completa 10 quantuns na fila de prioridade, ele passa pra uma prioridade acima
+
+        framesParaPrioridadeUm = []
+        framesParaPrioridadeDois = []
+
+        for frame in filter(lambda frame: frame.process is not None and frame.process.tempoInicializacao < instanteAtual, self.filaProcessosUsuario[1]):
+            if frame.quantumEsperando == 10:
+                framesParaPrioridadeUm.append(frame)
+            else:
+                frame.quantumEsperando +=1
+
+        for frame in filter(lambda frame: frame.process.tempoInicializacao < instanteAtual, self.filaProcessosUsuario[2]):
+            if frame.quantumEsperando == 10:
+                framesParaPrioridadeDois.append(frame)
+            else:
+                frame.quantumEsperando +=1
+
+        for frameToRemove in framesParaPrioridadeUm:
+            self.filaProcessosUsuario[1].remove(frameToRemove)
+
+        for frameToRemove in framesParaPrioridadeDois:
+            self.filaProcessosUsuario[2].remove(frameToRemove)
+
+        self.filaProcessosUsuario[0].append(framesParaPrioridadeUm)
+        self.filaProcessosUsuario[1].append(framesParaPrioridadeDois)

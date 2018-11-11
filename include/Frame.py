@@ -11,3 +11,4 @@ class Frame:
         self.offsetMemoria = None
         self.tempoExecutado = 0
         self.instrucaoAtual = 0
+        self.quantumEsperando = 0

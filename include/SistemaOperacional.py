@@ -24,7 +24,7 @@ class SistemaOperacional:
                 else:
                     self.gerenciadorFila.adicionaProcessoDeVoltaAListaDeProntos(frame)
 
-        self.gerenciadorDisco.showDiskOperations()
+        self.gerenciadorDisco.showDiskOperations(self)
         print(self.gerenciadorDisco.printMapaOcupacaoDoDisco())
 
     def executaProcesso(self, frame, instanteAtual):

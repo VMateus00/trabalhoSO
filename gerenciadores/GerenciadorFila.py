@@ -1,29 +1,21 @@
-from include.Frame import Frame
-
-
 class GerenciadorFila:
 
-    def __init__(self, listaProcessos):
+    def __init__(self, listaFrames):
 
         self.filaTempoReal = []
         self.filaProcessosUsuario = [[], [], []]
 
         self.filaProcessosProntos = [self.filaTempoReal, self.filaProcessosUsuario]
 
-        for indice in range(len(listaProcessos)):
-
-            if listaProcessos[indice].prioridadeProcesso == 0:
-                self.filaTempoReal.append(Frame(listaProcessos[indice]))
-
-            elif listaProcessos[indice].prioridadeProcesso == 1:
-                self.filaProcessosUsuario[0].append(Frame(listaProcessos[indice]))
-
-            elif listaProcessos[indice].prioridadeProcesso == 2:
-                self.filaProcessosUsuario[1].append(Frame(listaProcessos[indice]))
-
-            elif listaProcessos[indice].prioridadeProcesso == 3:
-                self.filaProcessosUsuario[2].append(Frame(listaProcessos[indice]))
-
+        for frame in listaFrames:
+            if frame.process.prioridadeProcesso == 0:
+                self.filaTempoReal.append(frame)
+            elif frame.process.prioridadeProcesso == 1:
+                self.filaProcessosUsuario[0].append(frame)
+            elif frame.process.prioridadeProcesso == 2:
+                self.filaProcessosUsuario[1].append(frame)
+            elif frame.process.prioridadeProcesso == 3:
+                self.filaProcessosUsuario[2].append(frame)
             else:
                 print("Prioridade inconsistente")
 
@@ -57,7 +49,6 @@ class GerenciadorFila:
             frame.quantumEsperando = 0
 
     def atualizaPrioridadeProcessos(self, instanteAtual):
-        # TODO filtrar os processos que tenham o tempo inicio menor que o instante atual
         # Para cada processo, aumentar o contador de prioridade dele em 1 ponto
         # quando completa 10 quantuns na fila de prioridade, ele passa pra uma prioridade acima
 

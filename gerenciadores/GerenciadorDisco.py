@@ -81,22 +81,55 @@ class GerenciadorDisco:
                 self.executaOperacao(diskOperation, pidProcess, isProcessTempoReal)
                 break
 
-    # TODO ainda incompleto
     def executaOperacao(self, diskOperation, pidProcess, isProcessTempoReal):
         if diskOperation.typeOfOperation == 0:  # O => cria arquivos em disco
-            bloco = self.getBlocoMemoriaLivreSeExistir(diskOperation.createOperation)
-            if bloco is None:
-                diskOperation.msgSaida = "O processo " + str(pidProcess) + " não pode criar o arquivo " + diskOperation.fileName + " (Falta de espaço)."
-            else:
-                bloco.processoCriouCod = pidProcess
-            print()
+            self.executaOperacaoCreateFile(diskOperation, pidProcess)
         elif diskOperation.typeOfOperation == 1:  # 1 => remove arquivos em disco
-            print()
+            self.executaOperacaoDeleteFile(diskOperation, isProcessTempoReal, pidProcess)
         else:
+            diskOperation.resultadoOperacao = False
             diskOperation.msgSaida = "Operação inválida"
 
-    def getBlocoMemoriaLivreSeExistir(self, qtdBlocosNecessarios):
+        return pidProcess # Retorna o codigo do processo, para saber qual é o processo que deve ser removido da pilha de bloquados
 
+    def executaOperacaoCreateFile(self, diskOperation, pidProcess):
+        bloco = self.getBlocoMemoriaLivreSeExistir(diskOperation.createOperation)
+        if bloco is None:
+            diskOperation.resultadoOperacao = False
+            diskOperation.msgSaida = "O processo " + str(
+                pidProcess) + " não pode criar o arquivo " + diskOperation.fileName + " (Falta de espaço)."
+        else:
+            bloco.processoCriouCod = pidProcess
+            bloco.nome = diskOperation.fileName
+            diskOperation.resultadoOperacao = True
+
+            valor = bloco.posicaoInicial
+            resultadoBlocos = ""
+            while valor < bloco.posicaoInicial + bloco.qtdBlocosOcupados:
+                resultadoBlocos += str(valor) + ", "
+                valor +=1
+                # TODO corrigir print
+            diskOperation.msgSaida = "O processo " + str(
+                pidProcess) + " criou o arquivo " + bloco.nome + " (blocos " + resultadoBlocos + ")."
+
+    def executaOperacaoDeleteFile(self, diskOperation, isProcessTempoReal, pidProcess):
+        blocoOcupado = next(filter(lambda bloco: bloco.nome == diskOperation.fileName, self.blocosOcupados), None)
+        if blocoOcupado is None:
+            diskOperation.resultadoOperacao = False
+            diskOperation.msgSaida = "O arquivo " + diskOperation.fileName + " não existe."
+        else:
+            if self.verificaPodeDeletarArquivo(pidProcess, isProcessTempoReal, blocoOcupado):
+                self.blocosOcupados.remove(blocoOcupado)
+                diskOperation.msgSaida = "O processo " + str(pidProcess) + " deletou o arquivo " + blocoOcupado.nome
+                diskOperation.resultadoOperacao = True
+                blocoOcupado.nome = "Livre"
+                self.blocosLivres.append(blocoOcupado)
+            else:
+                diskOperation.resultadoOperacao = False
+                diskOperation.msgSaida = "O processo " + str(
+                    pidProcess) + " não pode deletar o arquivo " + diskOperation.fileName
+
+    def getBlocoMemoriaLivreSeExistir(self, qtdBlocosNecessarios):
         bloco = self.getFirstBlocoLivre(qtdBlocosNecessarios)
         if bloco is None:
             return None
@@ -105,8 +138,10 @@ class GerenciadorDisco:
             if bloco.qtdBlocosOcupados > qtdBlocosNecessarios:
                 posicaoInicialNovoBlocoVazio = bloco.posicaoInicial + (bloco.qtdBlocosOcupados - qtdBlocosNecessarios)
                 qtdBlocosOcupados = bloco.qtdBlocosOcupados - qtdBlocosNecessarios
+                self.blocosLivres.remove(bloco)
                 self.blocosLivres.append(MemBlock("livre", posicaoInicialNovoBlocoVazio, qtdBlocosOcupados))
                 self.blocosLivres.sort(key=lambda bloco : bloco.posicaoInicial)
+                bloco.qtdBlocosOcupados = qtdBlocosNecessarios
         self.blocosOcupados.append(bloco)
         self.blocosOcupados.sort(key=lambda bloco : bloco.posicaoInicial)
 
@@ -122,13 +157,27 @@ class GerenciadorDisco:
 
     # Metodo para mostrar as operacoes de disco elas só aparecem ao terminar os processos,
     # apesar de serem feitas enquanto executa
-    def showDiskOperations(self):
+    def showDiskOperations(self, so):
         print("Sistema de arquivos => ")
         for diskOperation in self.listaOperacoes:
-            print("Operação " + diskOperation.operationCod + " => ", end="")
+            print("Operação " + str(diskOperation.operationCod) + " => ", end="")
             if diskOperation.resultadoOperacao:
                 print("Sucesso")
             else:
                 print("Falha")
 
+            if diskOperation is None or diskOperation.msgSaida == "":
+                if self.verificaExisteOProcesso(diskOperation.processCod, so):
+                    diskOperation.msgSaida = "O processo "+str(diskOperation.processCod)+ " já encerrou o seu tempo de processamento."
+                else:
+                    diskOperation.msgSaida = "Não existe o processo " + str(diskOperation.processCod)
             print(diskOperation.msgSaida)
+
+    def verificaExisteOProcesso(self, processCod, so):
+        return so.gerenciadorProcessos.existsProcessWithCod(processCod)
+
+    def verificaPodeDeletarArquivo(self, pidProcess, isProcessTempoReal, blocoOcupado):
+        if isProcessTempoReal:
+            return True
+        else:
+            return blocoOcupado.processoCriouCod == pidProcess

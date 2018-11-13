@@ -29,7 +29,7 @@ def main(arquivos):
     gerenciadorMemoria = GerenciadorMemoria()
     gerenciadorEntradaSaida = GerenciadorEntradaSaida()
 
-    gerenciadorFila = GerenciadorFila(listaProcessos)
+    gerenciadorFila = GerenciadorFila(gerenciadorProcessos.getFrames())
 
     SistemaOperacional(gerenciadorProcessos, gerenciadorDisco, gerenciadorMemoria, gerenciadorEntradaSaida, gerenciadorFila)
 

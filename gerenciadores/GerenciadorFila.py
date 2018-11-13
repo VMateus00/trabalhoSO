@@ -82,5 +82,5 @@ class GerenciadorFila:
         for frameToRemove in framesParaPrioridadeDois:
             self.filaProcessosUsuario[2].remove(frameToRemove)
 
-        self.filaProcessosUsuario[0].append(framesParaPrioridadeUm)
-        self.filaProcessosUsuario[1].append(framesParaPrioridadeDois)
+        self.filaProcessosUsuario[0] += framesParaPrioridadeUm
+        self.filaProcessosUsuario[1] += framesParaPrioridadeDois

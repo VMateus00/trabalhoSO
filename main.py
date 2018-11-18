@@ -31,9 +31,8 @@ def main(arquivos):
 
     gerenciadorFila = GerenciadorFila(gerenciadorProcessos.getFrames())
 
-    SistemaOperacional(gerenciadorProcessos, gerenciadorDisco, gerenciadorMemoria, gerenciadorEntradaSaida, gerenciadorFila)
-
-
+    so = SistemaOperacional(gerenciadorProcessos, gerenciadorDisco, gerenciadorMemoria, gerenciadorEntradaSaida, gerenciadorFila)
+    so.executaSO()
 
 if __name__=="__main__":
     main(arquivos=["processes.txt", "files.txt"])

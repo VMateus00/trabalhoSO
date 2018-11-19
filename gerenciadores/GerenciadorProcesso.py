@@ -29,6 +29,8 @@ class GerenciadorProcesso:
                 else:
                     frame.executed = True
                     return True
+            else:
+                so.gerenciadorFila.adicionaProcessoListaBloqueados(frame)
         else:
             return False
 
@@ -52,6 +54,7 @@ class GerenciadorProcesso:
             print("P" + str(frame.pid) + " return SIGINT")
             frame.tempoExecutado = frame.process.tempoProcessador
             so.liberaEspacoOcupadoProcesso(frame)
+            so.liberaRecursosES(frame)
             return instanteAtual + frame.process.tempoProcessador
         else:
             frame.instrucaoAtual = so.executaInstrucaoPorTempo(so, SistemaOperacional.QUANTUM, frame.instrucaoAtual, frame.pid, False, instanteAtual)
@@ -59,6 +62,7 @@ class GerenciadorProcesso:
             if frame.tempoExecutado == frame.process.tempoProcessador:
                 print("P" + str(frame.pid) + " return SIGINT")
                 so.liberaEspacoOcupadoProcesso(frame)
+                so.liberaRecursosES(frame)
             else:
                 so.gerenciadorFila.adicionaProcessoDeVoltaAListaDeProntos(frame)
             return instanteAtual+1

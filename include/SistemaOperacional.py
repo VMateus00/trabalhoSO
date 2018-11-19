@@ -44,3 +44,7 @@ class SistemaOperacional:
 
     def executaFuncaoDiscoSeExistir(self, pidProcess, isProcessTempoReal):
         self.gerenciadorDisco.executaFuncaoDiscoSeExistir(pidProcess, isProcessTempoReal)
+
+    def liberaRecursosES(self, frame):
+        self.gerenciadorEntradaSaida.liberaRecursos(frame)
+        self.gerenciadorFila.verificaProcessoBloqueadoEAddNaFila(frame)

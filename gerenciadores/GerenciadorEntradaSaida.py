@@ -86,3 +86,7 @@ class GerenciadorEntradaSaida:
                 self.gerenciadorEntradaSaida.driverRelease(frame.process.codigoDisco)
 
             return False
+
+    def liberaRecursos(self, frame):
+        #TODO
+        pass

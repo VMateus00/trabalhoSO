@@ -6,6 +6,7 @@ class GerenciadorFila:
         self.filaProcessosUsuario = [[], [], []]
 
         self.filaProcessosProntos = [self.filaTempoReal, self.filaProcessosUsuario]
+        self.filaProcessosBloqueados = []
 
         for frame in listaFrames:
             if frame.process.prioridadeProcesso == 0:
@@ -75,3 +76,10 @@ class GerenciadorFila:
 
         self.filaProcessosUsuario[0] += framesParaPrioridadeUm
         self.filaProcessosUsuario[1] += framesParaPrioridadeDois
+
+    def adicionaProcessoListaBloqueados(self, frame):
+        self.filaProcessosBloqueados.append(frame)
+
+    def verificaProcessoBloqueadoEAddNaFila(self, frame):
+        # TODO
+        pass

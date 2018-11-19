@@ -12,3 +12,11 @@ class Frame:
         self.tempoExecutado = 0
         self.instrucaoAtual = 0
         self.quantumEsperando = 0
+
+        self.motivoBloqueado = 0
+
+        # lista de motivos para bloqueio
+        # 0 - nao está bloqueado
+        # 1 - bloqueado por operacao de disco
+        # 2 - bloqueado por recurso nao obtido
+        # 3 - bloqueado por nao conseguir memoria

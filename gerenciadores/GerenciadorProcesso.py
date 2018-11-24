@@ -57,7 +57,8 @@ class GerenciadorProcesso:
                 tempoTotalExecutado += SistemaOperacional.QUANTUM
                 if frame.motivoBloqueado != 0:
                     break
-            if frame.motivoBloqueado == 0:
+            frame.tempoExecutado +=tempoTotalExecutado
+            if frame.tempoExecutado == frame.process.tempoProcessador:
                 print("P" + str(frame.pid) + " return SIGINT")
                 frame.tempoExecutado = frame.process.tempoProcessador
                 so.liberaEspacoOcupadoProcesso(frame)

@@ -22,9 +22,9 @@ class SistemaOperacional:
 
                 if frame.executed:
                     instanteAtual = self.gerenciadorProcessos.executaProcesso(self, frame, instanteAtual)
+                    self.gerenciadorDisco.executaOperacao(self)
                 else:
                     self.gerenciadorFila.adicionaProcessoDeVoltaAListaDeProntos(frame)
-                self.gerenciadorDisco.executaOperacao(self)
 
         self.gerenciadorDisco.showDiskOperations(self)
         print(self.gerenciadorDisco.printMapaOcupacaoDoDisco())

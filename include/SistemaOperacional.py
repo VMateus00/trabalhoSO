@@ -27,7 +27,7 @@ class SistemaOperacional:
                     self.gerenciadorFila.adicionaProcessoDeVoltaAListaDeProntos(frame)
 
         self.gerenciadorDisco.showDiskOperations(self)
-        print(self.gerenciadorDisco.printMapaOcupacaoDoDisco())
+        self.gerenciadorDisco.printMapaOcupacaoDoDisco()
 
     def dispatcherPrint(self, frame):
         print("Dispatcher => ")
@@ -43,9 +43,27 @@ class SistemaOperacional:
     def liberaEspacoOcupadoProcesso(self, frame):
         self.gerenciadorMemoria.liberaProcessoDaMemoria(frame)
 
+    def adicionaDadosEmMemoria(self, frame, isBlocoTempoReal):
+        return self.gerenciadorMemoria.adicionaDadosEmMemoria(frame.process.blocoMemoria, isBlocoTempoReal)
+
     def verificaExisteFuncaoDiscoAExecutar(self, frame):
         return self.gerenciadorDisco.verificaExisteFuncaoDiscoAExecutar(frame)
+
+    def obtemRecursosES(self, frame):
+        return self.gerenciadorEntradaSaida.obtemRecursosES(frame)
 
     def liberaRecursosES(self, frame):
         self.gerenciadorEntradaSaida.liberaRecursos(frame)
         self.gerenciadorFila.verificaProcessoBloqueadoEAddNaFila(frame)
+
+    def adicionaProcessoListaBloqueados(self, frame):
+        self.gerenciadorFila.adicionaProcessoListaBloqueados(frame)
+
+    def atualizaPrioridadeProcessos(self, instanteAtual):
+        self.gerenciadorFila.atualizaPrioridadeProcessos(instanteAtual)
+
+    def adicionaProcessoDeVoltaAListaDeProntos(self, frame):
+        self.gerenciadorFila.adicionaProcessoDeVoltaAListaDeProntos(frame)
+
+    def existsProcessWithCod(self, processCod):
+        return self.gerenciadorProcessos.existsProcessWithCod(processCod)

@@ -75,30 +75,37 @@ class GerenciadorFila:
         frame.quantumEsperando = 0
 
     def atualizaPrioridadeProcessos(self, instanteAtual):
-        # Para cada processo, aumentar o contador de prioridade dele em 1 ponto
+        # Para cada processo, aumentar o contador de prioridade dele em 1 quantum
         # quando completa 10 quantuns na fila de prioridade, ele passa pra uma prioridade acima
 
         framesParaPrioridadeUm = []
         framesParaPrioridadeDois = []
 
+        # Atualizando fila de prioridade 2
         for frame in filter(lambda frame: frame.process is not None and frame.process.tempoInicializacao < instanteAtual, self.filaProcessosUsuario[1]):
             if frame.quantumEsperando == 10:
+                frame.quantumEsperando = 0
                 framesParaPrioridadeUm.append(frame)
             else:
                 frame.quantumEsperando +=1
 
+        # Atualizando fila de prioridade 3
         for frame in filter(lambda frame: frame.process.tempoInicializacao < instanteAtual, self.filaProcessosUsuario[2]):
             if frame.quantumEsperando == 10:
+                frame.quantumEsperando = 0
                 framesParaPrioridadeDois.append(frame)
             else:
                 frame.quantumEsperando +=1
 
+        # Remove frames da lista de prioridade 2
         for frameToRemove in framesParaPrioridadeUm:
             self.filaProcessosUsuario[1].remove(frameToRemove)
 
+        # Remove frames da lista de prioridade 3
         for frameToRemove in framesParaPrioridadeDois:
             self.filaProcessosUsuario[2].remove(frameToRemove)
 
+        # Adiciona na nova fila de prioridade
         self.filaProcessosUsuario[0] += framesParaPrioridadeUm
         self.filaProcessosUsuario[1] += framesParaPrioridadeDois
 

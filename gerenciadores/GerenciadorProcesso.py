@@ -20,9 +20,9 @@ class GerenciadorProcesso:
 
     def inicializaProcesso(self, so, frame):
         if frame.executed is False:
-            if so.gerenciadorEntradaSaida.obtemRecursosES(frame):
+            if so.obtemRecursosES(frame):
                 isBlocoTempoReal = frame.process.prioridadeProcesso == 0
-                offsetMemoria = so.gerenciadorMemoria.adicionaDadosEmMemoria(frame.process.blocoMemoria, isBlocoTempoReal)
+                offsetMemoria = so.adicionaDadosEmMemoria(frame, isBlocoTempoReal)
                 if offsetMemoria == -1:
                     print("Não há espaço em memoria para alocar o processo")
                     return False
@@ -30,7 +30,7 @@ class GerenciadorProcesso:
                     frame.executed = True
                     return True
             else:
-                so.gerenciadorFila.adicionaProcessoListaBloqueados(frame)
+                so.adicionaProcessoListaBloqueados(frame)
         else:
             return False
 
@@ -41,9 +41,9 @@ class GerenciadorProcesso:
             frame.instrucaoAtual +=1
             if so.verificaExisteFuncaoDiscoAExecutar(frame):
                 frame.motivoBloqueado = 1
-                so.gerenciadorFila.adicionaProcessoListaBloqueados(frame)
+                so.adicionaProcessoListaBloqueados(frame)
                 # remove processo atual da lista dele, e adiciona na lista de processos bloqueados
-            so.gerenciadorFila.atualizaPrioridadeProcessos(instanteAtual)
+            so.atualizaPrioridadeProcessos(instanteAtual)
             contadorTempo += 1
             instanteAtual += 1
 
@@ -60,12 +60,12 @@ class GerenciadorProcesso:
             frame.tempoExecutado +=tempoTotalExecutado
             if frame.tempoExecutado == frame.process.tempoProcessador:
                 print("P" + str(frame.pid) + " return SIGINT")
-                frame.tempoExecutado = frame.process.tempoProcessador
+                # frame.tempoExecutado = frame.process.tempoProcessador
                 so.liberaEspacoOcupadoProcesso(frame)
                 so.liberaRecursosES(frame)
             return instanteAtual + tempoTotalExecutado
         else:
-            frame.instrucaoAtual = so.executaInstrucaoPorTempo(so, SistemaOperacional.QUANTUM, frame, instanteAtual)
+            frame.instrucaoAtual = self.executaInstrucaoPorTempo(so, SistemaOperacional.QUANTUM, frame, instanteAtual)
             frame.tempoExecutado += SistemaOperacional.QUANTUM
             if frame.motivoBloqueado == 0:
                 if frame.tempoExecutado == frame.process.tempoProcessador:
@@ -73,5 +73,5 @@ class GerenciadorProcesso:
                     so.liberaEspacoOcupadoProcesso(frame)
                     so.liberaRecursosES(frame)
                 else:
-                    so.gerenciadorFila.adicionaProcessoDeVoltaAListaDeProntos(frame)
+                    so.adicionaProcessoDeVoltaAListaDeProntos(frame)
             return instanteAtual+1

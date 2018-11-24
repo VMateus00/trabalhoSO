@@ -104,7 +104,7 @@ class GerenciadorDisco:
             diskOperation.resultadoOperacao = False
             diskOperation.msgSaida = "Operação inválida"
 
-        so.gerenciadorFila.adicionaProcessoDeVoltaAListaDeProntos(frame)
+        so.adicionaProcessoDeVoltaAListaDeProntos(frame)
 
     def executaOperacaoCreateFile(self, diskOperation, pidProcess):
         bloco = self.getBlocoMemoriaLivreSeExistir(diskOperation.createOperation)
@@ -172,7 +172,7 @@ class GerenciadorDisco:
     # Metodo para mostrar as operacoes de disco elas só aparecem ao terminar os processos,
     # apesar de serem feitas enquanto executa
     def showDiskOperations(self, so):
-        print("Sistema de arquivos => ")
+        print("\nSistema de arquivos => ")
         for diskOperation in self.listaOperacoes:
             print("Operação " + str(diskOperation.operationCod) + " => ", end="")
             if diskOperation.resultadoOperacao:
@@ -188,7 +188,7 @@ class GerenciadorDisco:
             print(diskOperation.msgSaida)
 
     def verificaExisteOProcesso(self, processCod, so):
-        return so.gerenciadorProcessos.existsProcessWithCod(processCod)
+        return so.existsProcessWithCod(processCod)
 
     def verificaPodeDeletarArquivo(self, pidProcess, isProcessTempoReal, blocoOcupado):
         if isProcessTempoReal:

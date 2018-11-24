@@ -26,15 +26,35 @@ class GerenciadorFila:
         self.filaProcessosUsuario[2].sort(key=lambda frame: frame.process.tempoInicializacao)
 
     def getProcessoAtual(self, instanteAtual):
-        if len(self.filaProcessosProntos[0]) != 0 and self.filaTempoReal[0].process.tempoInicializacao <= instanteAtual:
-            return self.filaTempoReal.pop(0)
-        elif len(self.filaProcessosProntos[1]) != 0:
-            if len(self.filaProcessosUsuario[0]) != 0 and self.filaProcessosUsuario[0][0].process.tempoInicializacao <= instanteAtual:
-                    return self.filaProcessosUsuario[0].pop(0)
-            elif len(self.filaProcessosUsuario[1]) != 0 and self.filaProcessosUsuario[1][0].process.tempoInicializacao <= instanteAtual:
-                    return self.filaProcessosUsuario[1].pop(0)
-            elif len(self.filaProcessosUsuario[2]) != 0 and self.filaProcessosUsuario[2][0].process.tempoInicializacao <= instanteAtual:
-                    return self.filaProcessosUsuario[2].pop(0)
+        #Verifica se há processos na fila de tempo real (prioridade 0).
+        if not self.filaProcessosProntos[0]:
+            #Procura o primeiro processo na fila que tenha o tempo de incialização menor ou igual ao instante atual
+            for indice in range(len(self.filaTempoReal)):
+                if self.filaTempoReal[indice].tempoInicializacao <= instanteAtual:
+                    return self.filaTempoReal.pop(indice)
+
+        #Verifica se há processos na fila de processos usuário.
+        elif not self.filaProcessosProntos[1]:
+            #Verifica se há processos na fila de prioridade 1.
+            if not self.filaProcessosUsuario[0]:
+                #Procura o primeiro processo na fila que tenha o tempo de incialização menor ou igual ao instante atual
+                for indice in range(len(self.filaProcessosUsuario[0])):
+                    if self.filaProcessosUsuario[indice].tempoInicializacao <= instanteAtual:
+                        return self.filaProcessosUsuario[0].pop(indice)
+
+            #Verifica se há processos na fila de prioridade 2.     
+            elif not self.filaProcessosUsuario[1]:
+                #Procura o primeiro processo na fila que tenha o tempo de incialização menor ou igual ao instante atual
+                for indice in range(len(self.filaProcessosUsuario[1])):
+                    if self.filaProcessosUsuario[indice].tempoInicializacao <= instanteAtual:
+                        return self.filaProcessosUsuario[1].pop(indice)
+
+            #Verifica se há processos na fila de prioridade 3.
+            elif not self.filaProcessosUsuario[2]:
+                #Procura o primeiro processo na fila que tenha o tempo de incialização menor ou igual ao instante atual
+                for indice in range(len(self.filaProcessosUsuario[2])):
+                    if self.filaProcessosUsuario[indice].tempoInicializacao <= instanteAtual:
+                        return self.filaProcessosUsuario[2].pop(indice)
         return None
 
     def isFilaProcessosVazia(self):

@@ -46,7 +46,10 @@ class GerenciadorFila:
 
     def adicionaProcessoDeVoltaAListaDeProntos(self, frame):
         if frame.tempoExecutado < frame.process.tempoProcessador:
-            self.filaProcessosUsuario[frame.process.prioridadeProcesso-1].append(frame)
+            if frame.process.prioridadeProcesso == 0:
+                self.filaTempoReal.append(frame)
+            else:
+                self.filaProcessosUsuario[frame.process.prioridadeProcesso-1].append(frame)
             frame.quantumEsperando = 0
 
     def atualizaPrioridadeProcessos(self, instanteAtual):
@@ -79,7 +82,9 @@ class GerenciadorFila:
 
     def adicionaProcessoListaBloqueados(self, frame):
         self.filaProcessosBloqueados.append(frame)
+        # TODO removeFrameDaFilaAtual
 
     def verificaProcessoBloqueadoEAddNaFila(self, frame):
+        # Trazer processos que foram bloqueados por recurso de E/S não olhar os bloqueados por disco
         # TODO
         pass

@@ -1,4 +1,5 @@
 from include.DiskOperation import DiskOperation
+from include.FrameAndDiskOperationToExecute import FrameAndDiskOperationToExecute
 from include.MemBlock import MemBlock
 
 
@@ -19,6 +20,8 @@ class GerenciadorDisco:
 
         self.blocosLivres = []
         self.carregaListaEspacosVazios()
+
+        self.operacaoAExecutar = []
 
     def readBloco(self, line):
         line = line.split(',')
@@ -73,24 +76,35 @@ class GerenciadorDisco:
 
         print("\n---------------------")
 
-    def executaFuncaoDiscoSeExistir(self, pidProcess, isProcessTempoReal):
+    def verificaExisteFuncaoDiscoAExecutar(self, frame):
         self.listaOperacoes.sort(key=lambda diskOperation : diskOperation.operationCod)
-        for diskOperation in filter(lambda diskOperation: diskOperation.processCod == pidProcess, self.listaOperacoes):
+        retorno = False
+        for diskOperation in filter(lambda diskOperation: diskOperation.processCod == frame.pid, self.listaOperacoes):
             if not diskOperation.isExecuted:
-                diskOperation.isExecuted = True
-                self.executaOperacao(diskOperation, pidProcess, isProcessTempoReal)
+                self.operacaoAExecutar.append(FrameAndDiskOperationToExecute(frame, diskOperation))
+                retorno = True
                 break
 
-    def executaOperacao(self, diskOperation, pidProcess, isProcessTempoReal):
+        return retorno
+
+    def executaOperacao(self, so):
+        if not self.operacaoAExecutar:
+            return
+
+        frameAndDiskOperation = self.operacaoAExecutar.pop(0)
+        frame = frameAndDiskOperation.frame
+        diskOperation = frameAndDiskOperation.diskOperation
+        diskOperation.isExecuted = True
+
         if diskOperation.typeOfOperation == 0:  # O => cria arquivos em disco
-            self.executaOperacaoCreateFile(diskOperation, pidProcess)
+            self.executaOperacaoCreateFile(diskOperation, frame.pid)
         elif diskOperation.typeOfOperation == 1:  # 1 => remove arquivos em disco
-            self.executaOperacaoDeleteFile(diskOperation, isProcessTempoReal, pidProcess)
+            self.executaOperacaoDeleteFile(diskOperation, frame.process.prioridadeProcesso == 0, frame.pid)
         else:
             diskOperation.resultadoOperacao = False
             diskOperation.msgSaida = "Operação inválida"
 
-        return pidProcess # Retorna o codigo do processo, para saber qual é o processo que deve ser removido da pilha de bloquados
+        so.gerenciadorFila.adicionaProcessoDeVoltaAListaDeProntos(frame)
 
     def executaOperacaoCreateFile(self, diskOperation, pidProcess):
         bloco = self.getBlocoMemoriaLivreSeExistir(diskOperation.createOperation)

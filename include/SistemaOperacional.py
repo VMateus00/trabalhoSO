@@ -24,6 +24,7 @@ class SistemaOperacional:
                     instanteAtual = self.gerenciadorProcessos.executaProcesso(self, frame, instanteAtual)
                 else:
                     self.gerenciadorFila.adicionaProcessoDeVoltaAListaDeProntos(frame)
+                self.gerenciadorDisco.executaOperacao(self)
 
         self.gerenciadorDisco.showDiskOperations(self)
         print(self.gerenciadorDisco.printMapaOcupacaoDoDisco())
@@ -42,8 +43,8 @@ class SistemaOperacional:
     def liberaEspacoOcupadoProcesso(self, frame):
         self.gerenciadorMemoria.liberaProcessoDaMemoria(frame)
 
-    def executaFuncaoDiscoSeExistir(self, pidProcess, isProcessTempoReal):
-        self.gerenciadorDisco.executaFuncaoDiscoSeExistir(pidProcess, isProcessTempoReal)
+    def verificaExisteFuncaoDiscoAExecutar(self, frame):
+        return self.gerenciadorDisco.verificaExisteFuncaoDiscoAExecutar(frame)
 
     def liberaRecursosES(self, frame):
         self.gerenciadorEntradaSaida.liberaRecursos(frame)

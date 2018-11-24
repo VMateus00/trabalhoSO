@@ -39,9 +39,10 @@ class GerenciadorProcesso:
         while contadorTempo < tempoExecucao:
             print("P" + str(frame.pid) + " instruction " + str(frame.instrucaoAtual))
             frame.instrucaoAtual +=1
-            if so.executaFuncaoDiscoSeExistir(frame.pid, frame.process.prioridadeProcesso == 0):
+            if so.verificaExisteFuncaoDiscoAExecutar(frame):
+                frame.motivoBloqueado = 1
+                so.gerenciadorFila.adicionaProcessoListaBloqueados(frame)
                 # remove processo atual da lista dele, e adiciona na lista de processos bloqueados
-                so.gerenciadorFila.adicionaProcessoListaBloqueados(frame.pid)
             so.gerenciadorFila.atualizaPrioridadeProcessos(instanteAtual)
             contadorTempo += 1
             instanteAtual += 1
@@ -54,18 +55,22 @@ class GerenciadorProcesso:
             while tempoTotalExecutado < frame.process.tempoProcessador:
                 self.executaInstrucaoPorTempo(so, SistemaOperacional.QUANTUM, frame, instanteAtual)
                 tempoTotalExecutado += SistemaOperacional.QUANTUM
-            print("P" + str(frame.pid) + " return SIGINT")
-            frame.tempoExecutado = frame.process.tempoProcessador
-            so.liberaEspacoOcupadoProcesso(frame)
-            so.liberaRecursosES(frame)
-            return instanteAtual + frame.process.tempoProcessador
+                if frame.motivoBloqueado != 0:
+                    break
+            if frame.motivoBloqueado == 0:
+                print("P" + str(frame.pid) + " return SIGINT")
+                frame.tempoExecutado = frame.process.tempoProcessador
+                so.liberaEspacoOcupadoProcesso(frame)
+                so.liberaRecursosES(frame)
+            return instanteAtual + tempoTotalExecutado
         else:
             frame.instrucaoAtual = so.executaInstrucaoPorTempo(so, SistemaOperacional.QUANTUM, frame, instanteAtual)
             frame.tempoExecutado += SistemaOperacional.QUANTUM
-            if frame.tempoExecutado == frame.process.tempoProcessador:
-                print("P" + str(frame.pid) + " return SIGINT")
-                so.liberaEspacoOcupadoProcesso(frame)
-                so.liberaRecursosES(frame)
-            else:
-                so.gerenciadorFila.adicionaProcessoDeVoltaAListaDeProntos(frame)
+            if frame.motivoBloqueado == 0:
+                if frame.tempoExecutado == frame.process.tempoProcessador:
+                    print("P" + str(frame.pid) + " return SIGINT")
+                    so.liberaEspacoOcupadoProcesso(frame)
+                    so.liberaRecursosES(frame)
+                else:
+                    so.gerenciadorFila.adicionaProcessoDeVoltaAListaDeProntos(frame)
             return instanteAtual+1

@@ -34,30 +34,33 @@ class GerenciadorProcesso:
         else:
             return False
 
-    def executaInstrucaoPorTempo(self, so, tempoExecucao, instrucaoAtual, pidProcess, isProcessTempoReal, instanteAtual):
+    def executaInstrucaoPorTempo(self, so, tempoExecucao, frame, instanteAtual):
         contadorTempo = 0
         while contadorTempo < tempoExecucao:
-            print("P" + str(pidProcess) + " instruction " + str(instrucaoAtual+1))
-            so.executaFuncaoDiscoSeExistir(pidProcess, isProcessTempoReal)
+            print("P" + str(frame.pid) + " instruction " + str(frame.instrucaoAtual))
+            frame.instrucaoAtual +=1
+            if so.executaFuncaoDiscoSeExistir(frame.pid, frame.process.prioridadeProcesso == 0):
+                # remove processo atual da lista dele, e adiciona na lista de processos bloqueados
+                so.gerenciadorFila.adicionaProcessoListaBloqueados(frame.pid)
             so.gerenciadorFila.atualizaPrioridadeProcessos(instanteAtual)
             contadorTempo += 1
-            instrucaoAtual += 1
+            instanteAtual += 1
 
-        return instrucaoAtual
+        return instanteAtual
 
     def executaProcesso(self, so, frame, instanteAtual):
         if frame.process.prioridadeProcesso == 0:
             tempoTotalExecutado = 0
             while tempoTotalExecutado < frame.process.tempoProcessador:
-                self.executaInstrucaoPorTempo(so, SistemaOperacional.QUANTUM, frame.instrucaoAtual, frame.pid, True, instanteAtual)
-                tempoTotalExecutado += 1
+                self.executaInstrucaoPorTempo(so, SistemaOperacional.QUANTUM, frame, instanteAtual)
+                tempoTotalExecutado += SistemaOperacional.QUANTUM
             print("P" + str(frame.pid) + " return SIGINT")
             frame.tempoExecutado = frame.process.tempoProcessador
             so.liberaEspacoOcupadoProcesso(frame)
             so.liberaRecursosES(frame)
             return instanteAtual + frame.process.tempoProcessador
         else:
-            frame.instrucaoAtual = so.executaInstrucaoPorTempo(so, SistemaOperacional.QUANTUM, frame.instrucaoAtual, frame.pid, False, instanteAtual)
+            frame.instrucaoAtual = so.executaInstrucaoPorTempo(so, SistemaOperacional.QUANTUM, frame, instanteAtual)
             frame.tempoExecutado += SistemaOperacional.QUANTUM
             if frame.tempoExecutado == frame.process.tempoProcessador:
                 print("P" + str(frame.pid) + " return SIGINT")

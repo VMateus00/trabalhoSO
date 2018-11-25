@@ -39,6 +39,8 @@ class SistemaOperacional:
         print("   Utilização de scanner", frame.process.requisicaoScanner)
         print("   Utilização de drivers: ", frame.process.codigoDisco)
         print()
+        print("process " + str(frame.pid)+" =>")
+        print("P" + str(frame.pid)+" STARTED")
 
     def liberaEspacoOcupadoProcesso(self, frame):
         self.gerenciadorMemoria.liberaProcessoDaMemoria(frame)

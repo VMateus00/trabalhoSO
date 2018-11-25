@@ -16,7 +16,7 @@ class GerenciadorProcesso:
         return self.listaFrames
 
     def existsProcessWithCod(self, processCod):
-        return next(filter(lambda frame: frame.pidCount == processCod, self.listaFrames), None) is not None
+        return filter(lambda frame: frame.pidCount == processCod, self.listaFrames) is not None
 
     def inicializaProcesso(self, so, frame):
         if frame.executed is False:
@@ -37,7 +37,7 @@ class GerenciadorProcesso:
     def executaInstrucaoPorTempo(self, so, tempoExecucao, frame, instanteAtual):
         contadorTempo = 0
         while contadorTempo < tempoExecucao:
-            print("P" + str(frame.pid) + " instruction " + str(frame.instrucaoAtual))
+            print("P" + str(frame.pid) + " instruction " + str(frame.instrucaoAtual+1))
             frame.instrucaoAtual +=1
             if so.verificaExisteFuncaoDiscoAExecutar(frame):
                 frame.motivoBloqueado = 1
@@ -59,17 +59,16 @@ class GerenciadorProcesso:
                     break
             frame.tempoExecutado +=tempoTotalExecutado
             if frame.tempoExecutado == frame.process.tempoProcessador:
-                print("P" + str(frame.pid) + " return SIGINT")
-                # frame.tempoExecutado = frame.process.tempoProcessador
+                print("P" + str(frame.pid) + " return SIGINT\n")
                 so.liberaEspacoOcupadoProcesso(frame)
                 so.liberaRecursosES(frame)
             return instanteAtual + tempoTotalExecutado
         else:
-            frame.instrucaoAtual = self.executaInstrucaoPorTempo(so, SistemaOperacional.QUANTUM, frame, instanteAtual)
+            self.executaInstrucaoPorTempo(so, SistemaOperacional.QUANTUM, frame, instanteAtual)
             frame.tempoExecutado += SistemaOperacional.QUANTUM
             if frame.motivoBloqueado == 0:
                 if frame.tempoExecutado == frame.process.tempoProcessador:
-                    print("P" + str(frame.pid) + " return SIGINT")
+                    print("P" + str(frame.pid) + " return SIGINT\n")
                     so.liberaEspacoOcupadoProcesso(frame)
                     so.liberaRecursosES(frame)
                 else:

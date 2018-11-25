@@ -88,7 +88,7 @@ class GerenciadorDisco:
         return retorno
 
     def executaOperacao(self, so):
-        if not self.operacaoAExecutar:
+        if not self.operacaoAExecutar or len(self.operacaoAExecutar) == 0:
             return
 
         frameAndDiskOperation = self.operacaoAExecutar.pop(0)
@@ -138,6 +138,7 @@ class GerenciadorDisco:
                 diskOperation.resultadoOperacao = True
                 blocoOcupado.nome = "Livre"
                 self.blocosLivres.append(blocoOcupado)
+                self.blocosLivres.sort(key=lambda bloco : bloco.posicaoInicial)
             else:
                 diskOperation.resultadoOperacao = False
                 diskOperation.msgSaida = "O processo " + str(
@@ -149,10 +150,10 @@ class GerenciadorDisco:
             return None
         else:
             # criar um bloco do tamanho exato se for maior, liberando o espaco que nao foi usado
+            self.blocosLivres.remove(bloco)
             if bloco.qtdBlocosOcupados > qtdBlocosNecessarios:
                 posicaoInicialNovoBlocoVazio = bloco.posicaoInicial + (bloco.qtdBlocosOcupados - qtdBlocosNecessarios)
                 qtdBlocosOcupados = bloco.qtdBlocosOcupados - qtdBlocosNecessarios
-                self.blocosLivres.remove(bloco)
                 self.blocosLivres.append(MemBlock("livre", posicaoInicialNovoBlocoVazio, qtdBlocosOcupados))
                 self.blocosLivres.sort(key=lambda bloco : bloco.posicaoInicial)
                 bloco.qtdBlocosOcupados = qtdBlocosNecessarios
@@ -165,14 +166,13 @@ class GerenciadorDisco:
         # TODO remover esse for e colocar um utilitario padrao da linguagem
         for bloco in self.blocosLivres:
             if bloco.qtdBlocosOcupados >= qtdBlocos:
-                # TODO fazer com que ele remova esse bloco da lista de blocos livres
                 return bloco
         return None
 
     # Metodo para mostrar as operacoes de disco elas só aparecem ao terminar os processos,
     # apesar de serem feitas enquanto executa
     def showDiskOperations(self, so):
-        print("\nSistema de arquivos => ")
+        print("Sistema de arquivos => ")
         for diskOperation in self.listaOperacoes:
             print("Operação " + str(diskOperation.operationCod) + " => ", end="")
             if diskOperation.resultadoOperacao:

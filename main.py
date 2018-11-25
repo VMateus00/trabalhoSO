@@ -28,7 +28,6 @@ def main(arquivos):
     gerenciadorDisco = GerenciadorDisco(arquivoOperacoes)
     gerenciadorMemoria = GerenciadorMemoria()
     gerenciadorEntradaSaida = GerenciadorEntradaSaida()
-
     gerenciadorFila = GerenciadorFila(gerenciadorProcessos.getFrames())
 
     so = SistemaOperacional(gerenciadorProcessos, gerenciadorDisco, gerenciadorMemoria, gerenciadorEntradaSaida, gerenciadorFila)

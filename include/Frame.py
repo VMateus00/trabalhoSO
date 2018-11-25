@@ -9,7 +9,7 @@ class Frame:
         self.process = process
         self.executed = False
         self.offsetMemoria = None
-        self.tempoExecutado = 1
+        self.tempoExecutado = 0
         self.instrucaoAtual = 0
         self.quantumEsperando = 0
 

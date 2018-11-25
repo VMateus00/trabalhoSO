@@ -37,24 +37,24 @@ class GerenciadorFila:
         #Verifica se há processos na fila de processos usuário.
         if len(self.filaProcessosProntos[1]) != 0:
             #Verifica se há processos na fila de prioridade 1.
-            if not self.filaProcessosUsuario[0]:
+            if len(self.filaProcessosUsuario[0]) != 0:
                 #Procura o primeiro processo na fila que tenha o tempo de incialização menor ou igual ao instante atual
                 for indice in range(len(self.filaProcessosUsuario[0])):
-                    if self.filaProcessosUsuario[indice].process.tempoInicializacao <= instanteAtual:
+                    if self.filaProcessosUsuario[0][indice].process.tempoInicializacao <= instanteAtual:
                         return self.filaProcessosUsuario[0].pop(indice)
 
-            #Verifica se há processos na fila de prioridade 2.     
-            if not self.filaProcessosUsuario[1]:
+            #Verifica se há processos na fila de prioridade 2.
+            if len(self.filaProcessosUsuario[1]) != 0:
                 #Procura o primeiro processo na fila que tenha o tempo de incialização menor ou igual ao instante atual
                 for indice in range(len(self.filaProcessosUsuario[1])):
-                    if self.filaProcessosUsuario[indice].process.tempoInicializacao <= instanteAtual:
+                    if self.filaProcessosUsuario[1][indice].process.tempoInicializacao <= instanteAtual:
                         return self.filaProcessosUsuario[1].pop(indice)
 
             #Verifica se há processos na fila de prioridade 3.
-            if not self.filaProcessosUsuario[2]:
+            if len(self.filaProcessosUsuario[2]) != 0:
                 #Procura o primeiro processo na fila que tenha o tempo de incialização menor ou igual ao instante atual
                 for indice in range(len(self.filaProcessosUsuario[2])):
-                    if self.filaProcessosUsuario[indice].process.tempoInicializacao <= instanteAtual:
+                    if self.filaProcessosUsuario[2][indice].process.tempoInicializacao <= instanteAtual:
                         return self.filaProcessosUsuario[2].pop(indice)
         return None
 
@@ -71,7 +71,9 @@ class GerenciadorFila:
                 self.filaTempoReal.append(frame)
             else:
                 self.filaProcessosUsuario[frame.process.prioridadeProcesso-1].append(frame)
-        self.filaProcessosBloqueados.remove(frame)
+
+        if self.filaProcessosBloqueados.count(frame):
+            self.filaProcessosBloqueados.remove(frame)
         frame.quantumEsperando = 0
 
     def atualizaPrioridadeProcessos(self, instanteAtual):

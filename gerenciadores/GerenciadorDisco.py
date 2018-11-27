@@ -42,7 +42,7 @@ class GerenciadorDisco:
             self.blocosLivres.append(MemBlock("livre", blocoAtual, self.tamanhoMemoria-blocoAtual))
 
     def printMapaOcupacaoDoDisco(self):
-
+        print("Mapa de ocupação do disco:")
         print("---------------------")
         print("|", end=""),
 

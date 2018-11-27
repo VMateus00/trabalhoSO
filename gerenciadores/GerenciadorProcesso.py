@@ -30,6 +30,7 @@ class GerenciadorProcesso:
                     frame.executed = True
                     return True
             else:
+                frame.motivoBloqueado = 2
                 so.adicionaProcessoListaBloqueados(frame)
         else:
             return False

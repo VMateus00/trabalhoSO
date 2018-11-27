@@ -66,15 +66,16 @@ class GerenciadorFila:
             return False
 
     def adicionaProcessoDeVoltaAListaDeProntos(self, frame):
-        if frame.tempoExecutado < frame.process.tempoProcessador:
-            if frame.process.prioridadeProcesso == 0:
-                self.filaTempoReal.append(frame)
-            else:
-                self.filaProcessosUsuario[frame.process.prioridadeProcesso-1].append(frame)
+        if frame.motivoBloqueado == 0:
+            if frame.tempoExecutado < frame.process.tempoProcessador:
+                if frame.process.prioridadeProcesso == 0:
+                    self.filaTempoReal.append(frame)
+                else:
+                    self.filaProcessosUsuario[frame.process.prioridadeProcesso-1].append(frame)
 
-        if self.filaProcessosBloqueados.count(frame):
-            self.filaProcessosBloqueados.remove(frame)
-        frame.quantumEsperando = 0
+            if self.filaProcessosBloqueados.count(frame):
+                self.filaProcessosBloqueados.remove(frame)
+            frame.quantumEsperando = 0
 
     def atualizaPrioridadeProcessos(self, instanteAtual):
         # Para cada processo, aumentar o contador de prioridade dele em 1 quantum
@@ -116,5 +117,20 @@ class GerenciadorFila:
 
     def verificaProcessoBloqueadoEAddNaFila(self, frame):
         # Trazer processos que foram bloqueados por recurso de E/S não olhar os bloqueados por disco
-        # TODO
-        pass
+        for frameEncontrado in filter(lambda frame : frame.motivoBloqueado == 2, self.filaProcessosBloqueados):
+
+            liberaScanner = frameEncontrado.process.requisicaoScanner == 0 or (frame.process.requisicaoScanner != 0
+                                                                             and frameEncontrado.process.requisicaoScanner == frame.process.requisicaoScanner)
+
+            liberaModem = frameEncontrado.process.requisicaoModem == 0 or (frame.process.requisicaoModem != 0
+                                                                           and frameEncontrado.process.requisicaoModem == frame.process.requisicaoModem)
+
+            liberaImpressora = frameEncontrado.process.codigoImpressora == 0 or (frame.process.codigoImpressora != 0
+                                                                                 and frameEncontrado.process.codigoImpressora == frame.process.codigoImpressora)
+            if liberaScanner and liberaModem and liberaImpressora:
+                self.filaProcessosBloqueados.remove(frameEncontrado)
+                frameEncontrado.motivoBloqueado = 0
+                if frameEncontrado.process.prioridadeProcesso == 0:
+                    self.filaTempoReal.append(frameEncontrado)
+                else:
+                    self.filaProcessosUsuario[frameEncontrado.process.prioridadeProcesso-1].append(frameEncontrado)

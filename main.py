@@ -20,9 +20,14 @@ def main(arquivos):
 #         remover essa exception geral e criar uma especifica para cada parte
 
     listaProcessos = []
-    
+
+    contadorQtdProcessos=0
     for line in arquivoProcessos:
         listaProcessos.append(Process(line))
+        contadorQtdProcessos += 1
+        if contadorQtdProcessos == 999:
+            print("Foi atingido o maximo de processos suportados, os seguintes serão ignorados!")
+            break
 
     gerenciadorProcessos = GerenciadorProcesso(listaProcessos)
     gerenciadorDisco = GerenciadorDisco(arquivoOperacoes)
